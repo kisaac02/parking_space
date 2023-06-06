@@ -1,4 +1,6 @@
 import cv2
+import numpy as np
+import pickle
 
 def get_parking_spots_bboxes(connected_components):
     # grabs each component and exctracts bounding box
@@ -15,15 +17,35 @@ def get_parking_spots_bboxes(connected_components):
         slots.append([x1, y1, w, h])
     return slots
 
+EMPTY = True
+NOT_EMPTY = False
+MODEL = pickle.load(open("model.p", "rb"))
+
+def empty_or_not(spot_bgr):
+    flat_data = []
+    # reshapes image
+    img_resized = cv2.resize(spot_bgr, (15,15,3))
+    flat_data.append(img_resized.flatten())
+    flat_data = np.array(flat_data)
+
+    # model pretrained classifier
+    y_output = MODEL.predict(flat_data)
+
+    if y_output == 0:
+        return EMPTY
+    else:
+        return NOT_EMPTY
+
 
 video_path = r'C:/Users/kimis/Documents/Datasets/parking_data/parking_crop_loop.mp4'
 mask_path = r'C:/Users/kimis/Documents/Datasets/parking_data/mask_crop.png'
 
+# using the mask to create bounding boxes
 mask = cv2.imread(mask_path, 0) # open as greyscale image
 cap = cv2.VideoCapture(video_path)
 
-comps = cv2.connectedComponentsWithStats(mask, 4, cv2.CV_32S)
 # connected commonents. Graph theory. Each box is a connected component. Connected to other points in one components but components aren't connected to each other.
+comps = cv2.connectedComponentsWithStats(mask, 4, cv2.CV_32S)
 
 # gives bounding box for each parking spot as list of coords
 spots = get_parking_spots_bboxes(comps)
@@ -35,8 +57,13 @@ ret = True
 while ret:
     ret, frame = cap.read()
 
+    for spot in spots:
+        x1, y1, w, h = spot
+        # draws a rectangle for each spot
+        frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (255,0,0), 2) # blue colour. width = 2
+
     cv2.imshow('frame', frame)
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(25) & 0xFF == ord('q'): # press q to close window
         break
 # issue - popup window doesn't close
 
