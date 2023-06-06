@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pickle
+# from skimage.tranform import resize
 
 def get_parking_spots_bboxes(connected_components):
     # grabs each component and exctracts bounding box
