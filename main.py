@@ -54,16 +54,27 @@ spots = get_parking_spots_bboxes(comps)
 print(spots[0])
 
 # iterate through frames in video
+spots_status = [None for j in spots]
 ret = True
+step = 30
+frame_number = 0
+
 while ret:
     ret, frame = cap.read()
 
-    for spot in spots:
-        x1, y1, w, h = spot
-        spot_crop = frame[y1:y1+h, x1:x1+w, :]
+    if frame_number % step == 0:
+        for spot_idx, spot in enumerate(spots):
+            x1, y1, w, h = spot
+            spot_crop = frame[y1:y1+h, x1:x1+w, :]
 
-        spot_status = empty_or_not(spot_crop)
+            spot_status = empty_or_not(spot_crop)
 
+            spots_status[spot_idx] = spot_status
+
+# decoupled spot status prediction from drawing rectangle
+    for spot_idx, spot in enumerate(spots):
+        spot_status = spots_status[spot_idx]
+        x1, y1, w, h = spots[spot_idx]
         if spot_status:
         # draws a rectangle for each spot
             frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (0,255,0), 2) # (255,0,0) blue colour. width = 2
@@ -74,6 +85,8 @@ while ret:
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'): # press q to close window
         break
+
+    frame_number += 1
 # issue - popup window doesn't close
 
 cap.release()
