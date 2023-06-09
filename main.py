@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pickle
-# from skimage.tranform import resize
+from skimage.transform import resize
 
 def get_parking_spots_bboxes(connected_components):
     # grabs each component and exctracts bounding box
@@ -25,7 +25,7 @@ MODEL = pickle.load(open("model.p", "rb"))
 def empty_or_not(spot_bgr):
     flat_data = []
     # reshapes image
-    img_resized = cv2.resize(spot_bgr, (15,15,3))
+    img_resized = resize(spot_bgr, (15,15,3))
     flat_data.append(img_resized.flatten())
     flat_data = np.array(flat_data)
 
