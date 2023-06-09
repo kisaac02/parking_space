@@ -60,8 +60,16 @@ while ret:
 
     for spot in spots:
         x1, y1, w, h = spot
+        spot_crop = frame[y1:y1+h, x1:x1+w, :]
+
+        spot_status = empty_or_not(spot_crop)
+
+        if spot_status:
         # draws a rectangle for each spot
-        frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (255,0,0), 2) # blue colour. width = 2
+            frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (0,255,0), 2) # (255,0,0) blue colour. width = 2
+        else:
+            frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (0,0,255), 2)
+
 
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'): # press q to close window

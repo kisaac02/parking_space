@@ -2,10 +2,11 @@ import os
 import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
-from scikit-learn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+import pickle
 
 # TODO move image processing onto GPU. Use CUDA or 
 input_dir = r'C:/Users/kimis/Documents/Datasets/parking_data/clf-data'
@@ -47,4 +48,7 @@ y_predict = best_estimator.predict(x_test)
 score = accuracy_score(y_predict, y_test)
 
 print(f'{score*100}% of samples where correctly classified')
+
+# save best model
+pickle.dump(best_estimator, open('./model.p', 'wb'))
 
