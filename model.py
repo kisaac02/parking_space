@@ -3,6 +3,8 @@ import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
 
 # TODO move image processing onto GPU. Use CUDA or 
 input_dir = r'C:/Users/kimis/Documents/Datasets/parking_data/clf-data'
@@ -24,10 +26,19 @@ data = np.asarray(data)
 labels = np.asarray(labels)
 
 # train/test split
-x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=True, stratify=labels)
+x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=True, stratify=labels) # same proportion of labels in train and test.
 
+# model
+classifier = SVC()
 
+parameters = [{'gamma':[0.01,0.001,0.0001], 'C':[1,10,100,1000]}]
+# trains 12 image classifiers
 
+grid_search = GridSearchCV(classifier, parameters)
+
+grid_search.fit(x_train, y_train)
+
+# test
 
 
 
