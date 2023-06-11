@@ -76,9 +76,17 @@ while ret:
             spot_crop = frame[y1:y1+h, x1:x1+w, :]
             diffs[spot_idx] = calc_diff(spot_crop, previous_frame[y1:y1+h, x1:x1+w, :])          
 
+        # distribution of differences
+        print([diffs[j] for j in np.argsort(diffs)][::-1])
 
     if frame_number % step == 0:
-        for spot_idx, spot in enumerate(spots):
+        if previous_frame is None:
+            arr_ = range(len(spots))
+        else:
+            arr_ = [j for j in np.argsort(diffs) if diffs[j]/np.amax(diffs) > 0.4]
+        for spot_idx in arr_:
+        # for spot_idx, spot in enumerate(spots):
+            spot = spots[spot_idx]
             x1, y1, w, h = spot
             spot_crop = frame[y1:y1+h, x1:x1+w, :]
 
