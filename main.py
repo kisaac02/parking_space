@@ -108,6 +108,11 @@ while ret:
         else:
             frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (0,0,255), 2)
 
+    num_empty_spots = sum(spots_status)
+    num_all_spots = len(spots_status)
+    cv2.rectangle(frame, (80,20), (550,80), (0,0,0), -1) #rectangle corners, black, filled
+    cv2.putText(frame, f'Available spots: {num_empty_spots} / {num_all_spots}', (100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+
     # cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'): # press q to close window
