@@ -1,4 +1,5 @@
 import cv2
+import os
 import numpy as np
 import pickle
 from skimage.transform import resize
@@ -37,9 +38,13 @@ def empty_or_not(spot_bgr):
     else:
         return NOT_EMPTY
 
+# rough way of calculating the difference between to images. To see if anything hs changed.
+def calc_diff(img1, img2):
+    return np.abs(np.mean(img1) - np.mean(img2))
 
-video_path = r'C:/Users/kimis/Documents/Datasets/parking_data/parking_crop_loop.mp4'
-mask_path = r'C:/Users/kimis/Documents/Datasets/parking_data/mask_crop.png'
+folder_path = r'C:/Users/kimis/Documents/Datasets/parking_data'
+video_path =  os.path.join(folder_path, 'parking_1920_1080_loop.mp4')
+mask_path =  os.path.join(folder_path, 'mask_1920_1080.png')
 
 # using the mask to create bounding boxes
 mask = cv2.imread(mask_path, 0) # open as greyscale image
@@ -51,16 +56,26 @@ comps = cv2.connectedComponentsWithStats(mask, 4, cv2.CV_32S)
 # gives bounding box for each parking spot as list of coords
 spots = get_parking_spots_bboxes(comps)
 
-print(spots[0])
-
 # iterate through frames in video
 spots_status = [None for j in spots]
+diffs = [None for j in spots]
+
+previous_frame = None
+
 ret = True
 step = 30
 frame_number = 0
 
 while ret:
     ret, frame = cap.read()
+    
+    # quick calc to see if frame has changed
+    if frame_number % step == 0 and previous_frame is not None:
+        for spot_idx, spot in enumerate(spots):
+            x1, y1, w, h = spot
+            spot_crop = frame[y1:y1+h, x1:x1+w, :]
+            diffs[spot_idx] = calc_diff(spot_crop, previous_frame[y1:y1+h, x1:x1+w, :])          
+
 
     if frame_number % step == 0:
         for spot_idx, spot in enumerate(spots):
@@ -70,6 +85,10 @@ while ret:
             spot_status = empty_or_not(spot_crop)
 
             spots_status[spot_idx] = spot_status
+    
+    # copy frame into previous_frame variable
+    if frame_number % step == 0:
+        previous_frame = frame.copy()
 
 # decoupled spot status prediction from drawing rectangle
     for spot_idx, spot in enumerate(spots):
@@ -81,7 +100,7 @@ while ret:
         else:
             frame = cv2.rectangle(frame, (x1, y1), (x1+w, y1+h), (0,0,255), 2)
 
-
+    # cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'): # press q to close window
         break
