@@ -1,6 +1,6 @@
 # Parking space tutorial
 
-![Screenshot of parking lot video](Parking lot screenshot.png)
+![Screenshot of parking lot video](/Parking lot screenshot.png)
 
 I followed 2 videos by @ComputerVisionEngineer on YouTube to build a model that identifies empty and occupied parking spaces in a video from a static camera giving a birds eye perspective of a parking lot. The method requires a mask of the parking lot which means that the code cannot be applied to other parking lots without having masks for them as well.
 
