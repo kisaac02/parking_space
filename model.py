@@ -8,7 +8,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import pickle
 
-# TODO move image processing onto GPU. Use CUDA or 
+# TODO move image processing onto GPU using CUDA 
 input_dir = r'C:/Users/kimis/Documents/Datasets/parking_data/clf-data'
 categories = ['empty', 'not_empty']
 # "C:\Users\kimis\Documents\Datasets\parking_data\clf-data\not_empty"

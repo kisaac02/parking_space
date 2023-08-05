@@ -38,8 +38,8 @@ def empty_or_not(spot_bgr):
     else:
         return NOT_EMPTY
 
-# rough way of calculating the difference between to images. To see if anything hs changed.
 def calc_diff(img1, img2):
+    # rough way of calculating the difference between to images. To see if anything has changed.
     return np.abs(np.mean(img1) - np.mean(img2))
 
 folder_path = r'C:/Users/kimis/Documents/Datasets/parking_data'
@@ -119,7 +119,6 @@ while ret:
         break
 
     frame_number += 1
-# issue - popup window doesn't close
 
 cap.release()
 cv2.destroyAllWindows()
