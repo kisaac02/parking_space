@@ -1,12 +1,13 @@
 # Parking space tutorial
 
-![Screenshot of parking lot video](https://github.com/kisaac02/parking_space/blob/main/Parking%20lot%20screenshot.png?raw=true)
-
 I followed 2 videos by @ComputerVisionEngineer on YouTube to build a model that identifies empty and occupied parking spaces in a video from a static camera giving a birds eye perspective of a parking lot. The method requires a mask of the parking lot which means that the code cannot be applied to other parking lots without having masks for them as well.
 
 Video link:
 https://www.youtube.com/watch?v=F-884J2mnOY
 
+This is what a screenshot of what the final output looks like. With each parking spot outlined in a colour indicating the status and a count of total free spaces.
+
+![Screenshot of parking lot video](https://github.com/kisaac02/parking_space/blob/main/Parking%20lot%20screenshot.png?raw=true)
 
 # model.py
 ## Training data
